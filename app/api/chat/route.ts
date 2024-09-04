@@ -1,4 +1,4 @@
-import { openai } from "@ai-sdk/openai";
+import { friendli } from "@friendliai/ai-provider";
 import { streamObject } from "ai";
 import { expenseSchema } from "./schema";
 
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const { expense }: { expense: string } = await req.json();
 
   const result = await streamObject({
-    model: openai("gpt-4-turbo"),
+    model: friendli("meta-llama-3.1-8b-instruct"),
     system:
       "You categorize expenses into one of the following categories: " +
       "TRAVEL, MEALS, ENTERTAINMENT, OFFICE SUPPLIES, OTHER." +
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
       ". When no date is supplied, use the current date.",
     prompt: `Please categorize the following expense: "${expense}"`,
     schema: expenseSchema,
+    temperature: 0.4,
     onFinish({ object }) {
       // save object to database
     },
